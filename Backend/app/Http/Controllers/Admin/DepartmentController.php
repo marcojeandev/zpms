@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\DepartmentRequest;
-use App\Http\Requests\DepartmentUpdateRequest;
+use App\Http\Requests\Admin\DepartmentRequest;
+use App\Http\Requests\Admin\DepartmentUpdateRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Department;
 

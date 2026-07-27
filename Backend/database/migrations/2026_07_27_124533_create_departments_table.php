@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('Department_name', 50);
             $table->string('Department_code', 50)->nullable();
-            $table->dateTime('addAt')->useCurrent();
+            // $table->dateTime('addAt')->useCurrent();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
