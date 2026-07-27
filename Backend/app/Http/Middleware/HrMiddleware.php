@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class PayrollMiddleware
+class HrMiddleware
 {
     /**
      * Handle an incoming request.
