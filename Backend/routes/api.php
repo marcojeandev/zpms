@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-Route::middleware(['auth:sanctum', 'throttle:60,1'])
+Route::middleware(['auth:sanctum', 'admin', 'throttle:60,1'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function (){

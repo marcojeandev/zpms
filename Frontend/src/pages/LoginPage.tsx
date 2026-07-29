@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { login } from '../services/auth';
+import { login } from '@/services/auth';
+import { useAuth } from '@/hooks/useAuth';
 import { Heart, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
@@ -10,15 +11,27 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const data = await login({ login: loginInput, password });
-      localStorage.setItem('token', data.token);
+      const response = await login({ login: loginInput, password });
+      // Expected response: { token, user }
+      const { token, user } = response;
+
+      // Store in context & localStorage
+      authLogin(token, user);
+
       toast.success('Welcome back!');
-      navigate('/');
+
+      // Redirect based on role
+      if (user?.user_role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/'); // or employee dashboard later
+      }
     } catch (err: any) {
       const msg = err.response?.data?.message || 'Invalid credentials.';
       toast.error(msg);

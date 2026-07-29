@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { register } from '../services/auth';
 import { Heart, Eye, EyeOff } from 'lucide-react';
 
+
 // Required fields (matches backend validation)
 const requiredFields = ['firstname', 'lastname', 'username', 'email', 'password'];
 

@@ -7,6 +7,7 @@
     "types": ["vite/client"],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -20,7 +21,19 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@context/*": ["src/context/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@pages/*": ["src/pages/*"],
+      "@services/*": ["src/services/*"],
+      "@types/*": ["src/types/*"],
+      "@lib/*": ["src/lib/*"]
+    }
   },
   "include": ["src"]
 }
