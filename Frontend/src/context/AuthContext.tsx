@@ -1,8 +1,10 @@
+// context/AuthContext.tsx
 import { createContext, useState, ReactNode, useEffect } from 'react';
 
 interface AuthContextType {
   user: any;
   isAdmin: boolean;
+  loading: boolean;
   login: (token: string, userData: any) => void;
   logout: () => void;
 }
@@ -11,8 +13,8 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Restore session on app load
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
@@ -23,6 +25,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // invalid JSON, ignore
       }
     }
+    setLoading(false);
   }, []);
 
   const login = (token: string, userData: any) => {
@@ -40,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAdmin = user?.user_role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, login, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,27 +1,28 @@
-﻿import { BrowserRouter, Routes, Route } from 'react-router-dom';
+﻿// App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '@/context/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-import AdminRoutes from '@/pages/admin/routes/AdminRoutes';
 import AdminLayout from '@/pages/admin/components/AdminLayout';
 
-// Admin pages (assume filenames without 'Page')
+// Admin pages
 import Dashboard from '@/pages/admin/Dashboard';
 import Employees from '@/pages/admin/Employees';
 import Leaves from '@/pages/admin/Leaves';
 import OverTime from '@/pages/admin/OverTime';
 import Schedules from '@/pages/admin/Schedules';
 import Announcement from '@/pages/admin/Announcement';
-import AttendanceAdmin from '@/pages/admin/Attendance'; // rename to avoid conflict
+import AttendanceAdmin from '@/pages/admin/Attendance';
 import Departments from '@/pages/admin/system/Departments';
 import UnitSection from '@/pages/admin/system/UnitSection';
 import Positions from '@/pages/admin/system/Positions';
 
-// Public pages (from /pages root)
+// Public pages
 import Landing from '@/pages/LandingPage';
 import Login from '@/pages/LoginPage';
 import Register from '@/pages/RegisterPage';
-import AttendancePublic from '@/pages/AttendancePage'; // public biometric page
+import AttendancePublic from '@/pages/AttendancePage';
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
           <Route path="/register" element={<Register />} />
 
           {/* Protected admin routes */}
-          <Route element={<AdminRoutes />}>
+          <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="employees" element={<Employees />} />

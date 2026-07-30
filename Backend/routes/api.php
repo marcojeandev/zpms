@@ -8,6 +8,8 @@ use App\Http\Controllers\AuthController;
 
 // Admin Controllers
 use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
+use App\Http\Controllers\Admin\UnitSectionController as AdminUnitSectionController;
+use App\Http\Controllers\Admin\PositionController as AdminPositionController;
 
 // Hr Controllers
 
@@ -32,4 +34,6 @@ Route::middleware(['auth:sanctum', 'admin', 'throttle:60,1'])
     ->name('admin.')
     ->group(function (){
         route::apiResource('departments', AdminDepartmentController::class);
+        route::apiResource('unit_sections', AdminUnitSectionController::class);
+        Route::apiResource('positions', AdminPositionController::class);
     });

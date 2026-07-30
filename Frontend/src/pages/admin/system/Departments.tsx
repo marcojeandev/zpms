@@ -3,6 +3,18 @@ import toast from 'react-hot-toast';
 import { departmentService } from '@/services/admin/departmentService';
 import { Department, DepartmentFormData } from '@/types/admin/department';
 
+// Helper to safely extract department array from various response shapes
+function extractDepartments(response: unknown): Department[] {
+  if (response && typeof response === 'object') {
+    const data = (response as any).data;
+    if (Array.isArray(data)) return data;
+    if (data && typeof data === 'object' && Array.isArray((data as any).data)) {
+      return (data as any).data;
+    }
+  }
+  return [];
+}
+
 export default function Departments() {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
@@ -13,12 +25,9 @@ export default function Departments() {
   const fetchDepartments = async () => {
     try {
       const res = await departmentService.getAll();
-      // 🛠️ Fix: extract array even if wrapped in { data: [...] }
-      const data = Array.isArray(res.data) 
-        ? res.data 
-        : (res.data?.data || []);
+      const data = extractDepartments(res);
       setDepartments(data);
-    } catch (err) {
+    } catch {
       toast.error('Failed to load departments');
     } finally {
       setLoading(false);
@@ -41,7 +50,7 @@ export default function Departments() {
       }
       setModalOpen(false);
       fetchDepartments();
-    } catch (err) {
+    } catch {
       toast.error('Operation failed');
     }
   };
@@ -52,7 +61,7 @@ export default function Departments() {
       await departmentService.delete(id);
       toast.success('Deleted');
       fetchDepartments();
-    } catch (err) {
+    } catch {
       toast.error('Delete failed');
     }
   };
@@ -60,7 +69,10 @@ export default function Departments() {
   const openModal = (department?: Department) => {
     if (department) {
       setEditing(department);
-      setForm({ Department_name: department.Department_name, Department_code: department.Department_code });
+      setForm({
+        Department_name: department.Department_name,
+        Department_code: department.Department_code,
+      });
     } else {
       setEditing(null);
       setForm({ Department_name: '', Department_code: '' });
@@ -68,82 +80,142 @@ export default function Departments() {
     setModalOpen(true);
   };
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-10 h-10 border-4 border-red-200 border-t-red-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Departments</h1>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Departments</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage your organization departments</p>
+        </div>
         <button
           onClick={() => openModal()}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow-sm transition flex items-center gap-2 text-sm font-medium"
         >
-          + Add Department
+          <span>+</span> Add Department
         </button>
       </div>
 
-      <div className="bg-white shadow rounded overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {departments.map((dept) => (
-              <tr key={dept.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{dept.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{dept.Department_name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{dept.Department_code || '-'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                  <button onClick={() => openModal(dept)} className="text-blue-600 hover:underline">Edit</button>
-                  <button onClick={() => handleDelete(dept.id)} className="text-red-600 hover:underline">Delete</button>
-                </td>
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-red-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-red-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-red-800 uppercase tracking-wider">ID</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-red-800 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-red-800 uppercase tracking-wider">Code</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-red-800 uppercase tracking-wider">Actions</th>
               </tr>
-            ))}
-            {departments.length === 0 && (
-              <tr><td colSpan={4} className="text-center py-4 text-gray-500">No departments</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-100">
+              {departments.map((dept) => (
+                <tr key={dept.id} className="hover:bg-red-50/50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{dept.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{dept.Department_name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {dept.Department_code || <span className="text-gray-400">—</span>}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+                    <button
+                      onClick={() => openModal(dept)}
+                      className="text-red-600 hover:text-red-800 font-medium transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(dept.id)}
+                      className="text-gray-500 hover:text-red-700 transition"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {departments.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center text-gray-400 text-sm">
+                    No departments found. Click “Add Department” to create one.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">{editing ? 'Edit' : 'Create'} Department</h2>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-fadeIn">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">
+              {editing ? 'Edit Department' : 'Create Department'}
+            </h2>
+            <p className="text-sm text-gray-500 mb-5">
+              {editing ? 'Update the department details below.' : 'Fill in the department information.'}
+            </p>
+
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Department Name *</label>
                 <input
                   type="text"
                   required
                   value={form.Department_name}
                   onChange={(e) => setForm({ ...form, Department_name: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-red-500 transition outline-none"
+                  placeholder="e.g., Human Resources"
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Code</label>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Department Code</label>
                 <input
                   type="text"
                   value={form.Department_code || ''}
                   onChange={(e) => setForm({ ...form, Department_code: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-red-500 transition outline-none"
+                  placeholder="e.g., HR"
                 />
               </div>
-              <div className="flex justify-end gap-2">
-                <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 border rounded">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg shadow-sm transition"
+                >
+                  {editing ? 'Update' : 'Create'}
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Fade-in animation (add to your global CSS or Tailwind config) */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.97); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.2s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
