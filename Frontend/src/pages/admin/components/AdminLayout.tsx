@@ -123,7 +123,7 @@ export default function AdminLayout() {
       <main className="flex-1 flex flex-col h-full overflow-y-auto bg-gray-50">
         {/* Optional top bar (you can add breadcrumbs or user avatar here) */}
         <div className="bg-white shadow-sm border-b border-red-100 px-6 py-3 flex justify-between items-center sticky top-0 z-10">
-          <h2 className="text-xl font-semibold text-gray-800">Zamboanga Puericulture Maternity and Childrens Hospital</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Hr Management System</h2>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500">Admin</span>
             <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-700 font-semibold text-sm">
