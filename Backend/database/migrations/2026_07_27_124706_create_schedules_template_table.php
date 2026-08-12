@@ -17,7 +17,8 @@ return new class extends Migration
             $table->time('schedule_from');
             $table->time('schedule_to');
             $table->enum('shift', ['day', 'night', 'graveyard']);
-            $table->dateTime('created_at')->useCurrent();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();       
         });
     }
 

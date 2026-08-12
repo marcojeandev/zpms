@@ -14,8 +14,9 @@ return new class extends Migration
             $table->foreignId('leave_id')
                   ->constrained('leave_request')
                   ->onDelete('cascade');
-            $table->timestamps(); // correct way
-        });
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();        
+          });
     }
 
     public function down(): void

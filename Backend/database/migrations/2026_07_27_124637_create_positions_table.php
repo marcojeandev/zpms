@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string('position_name', 50);
             $table->string('position_code', 10);
             $table->decimal('salary', 12, 2);
-            $table->dateTime('addAt')->useCurrent();
             $table->foreignId('department_id')
                 ->constrained('departments')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

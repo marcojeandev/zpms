@@ -25,11 +25,11 @@ return new class extends Migration
             $table->string('department_head', 120)->nullable();
             $table->string('medical_proof', 255)->nullable();
             $table->date('request_date')->default(DB::raw('CURRENT_DATE'));
-            $table->timestamps();
-
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

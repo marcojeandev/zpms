@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('unit_section', function (Blueprint $table) {
             $table->id();
             $table->string('unit_section_name', 50);
-            $table->timestamp('created_at');
             $table->foreignId('department_id')
                 ->constrained('departments')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

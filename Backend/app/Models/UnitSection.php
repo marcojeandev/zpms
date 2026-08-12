@@ -11,4 +11,9 @@ class UnitSection extends Model
         'unit_section_name',
         'department_id',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }
