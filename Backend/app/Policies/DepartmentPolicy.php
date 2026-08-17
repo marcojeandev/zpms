@@ -21,7 +21,11 @@ class DepartmentPolicy
      */
     public function view(User $user, Department $department): bool
     {
-        return true;
+        if (in_array($user->user_role, ['admin', 'hr', 'head'])) {
+            return true;
+        }
+        // Regular employee can only see their own department
+        return $user->department_id === $department->id;
     }
 
     /**

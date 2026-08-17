@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\UnitSection;
+use App\Models\Position;
 
 class Department extends Model
 {
@@ -16,5 +17,10 @@ class Department extends Model
     public function unitSections()
     {
         return $this->hasMany(UnitSection::class);
+    }
+
+    public function positions()
+    {
+        return $this->hasMany(Position::class);
     }
 }

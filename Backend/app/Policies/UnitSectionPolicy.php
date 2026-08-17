@@ -21,7 +21,11 @@ class UnitSectionPolicy
      */
     public function view(User $user, UnitSection $unitSection): bool
     {
-        return true;
+        if (in_array($user->user_role, ['admin', 'hr', 'head'])) {
+            return true;
+        }
+        // Regular employee can only see their own unitSection
+        return $user->unitSection_id === $unitSection->id;
     }
 
     /**
