@@ -25,8 +25,8 @@ class DepartmentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Department_name' => ['required', 'string', 'max:255', 'unique:departments,Department_name'],
-            'Department_code' => ['required', 'string', 'max:5', 'unique:departments,Department_name']
+            'Department_name' => ['required', 'string', 'max:255'],
+            'Department_code' => ['required', 'string', 'max:5']
         ];
     }
 }
